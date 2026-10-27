@@ -15,37 +15,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    name: Build Project Assets
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Deploy Clean Node Environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22' # Pulls stable container images cleanly
-
-      - name: Install Project Dependencies
-        run: npm install
-
-      - name: Compile Site using Astro Compiler
-        run: npm run build
-
-      - name: Upload Build Artifacts
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
     runs-on: ubuntu-latest
-    name: Push Artifacts Live
+    name: Push Pre-Built Artifacts Live
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Pages Infrastructure
+        uses: actions/configure-pages@v5
+
+      - name: Upload Static Assets Folder
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # This targets the folder built right on your machine
+          path: ./dist
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
