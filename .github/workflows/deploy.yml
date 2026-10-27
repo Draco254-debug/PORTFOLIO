@@ -2,24 +2,17 @@ name: Deploy Portfolio to GitHub Pages
 
 on:
   push:
-    branches: [ main ] # Triggers the build whenever you push to main
-
-  # Allows you to manually run this workflow from the Actions tab
+    branches: [ main ]
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 concurrency:
   group: "pages"
   cancel-in-progress: false
-
-env:
-  BUILD_PATH: "." # default value when package.json is in root
 
 jobs:
   build:
@@ -29,30 +22,21 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js Environment
+      - name: Setup Node.js v20 Explicitly
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: ${{ env.BUILD_PATH }}/package-lock.json
-
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
 
       - name: Install Project Dependencies
         run: npm install
-        working-directory: ${{ env.BUILD_PATH }}
-
 
       - name: Compile Site using Astro Compiler
         run: npm run build
-        working-directory: ${{ env.BUILD_PATH }}
 
       - name: Upload Build Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ env.BUILD_PATH }}/dist
+          path: ./dist
 
   deploy:
     environment:
