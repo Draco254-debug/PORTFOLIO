@@ -9,23 +9,54 @@ import '../styles/global.css';
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Graham Moguche | Portfolio</title>
+		
+		<style>
+			/* Animation Initial States (Before Script Runs) */
+			.animate-on-load {
+				opacity: 0;
+				transform: translateY(15px);
+				transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+				            transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+			}
+
+			/* Class added by JavaScript to reveal items */
+			.animate-reveal {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			/* Loading skeleton style for repositories */
+			.skeleton-card {
+				height: 140px;
+				background: linear-gradient(90deg, #161b22 25%, #21262d 50%, #161b22 75%);
+				background-size: 200% 100%;
+				animation: skeleton-loading 1.5s infinite;
+				border-radius: 6px;
+				border: 1px solid #30363d;
+			}
+
+			@keyframes skeleton-loading {
+				0% { background-position: 200% 0; }
+				100% { background-position: -200% 0; }
+			}
+		</style>
 	</head>
 	<body>
 		<main class="container">
 			<!-- Header Profile -->
-			<header style="margin-bottom: 3rem;">
+			<header class="animate-on-load" style="margin-bottom: 3rem;">
 				<h1>Graham Moguche</h1>
 				<p style="color: var(--accent-color); font-size: 1.25rem; margin: 0;">Software Engineer & Security Analyst</p>
 			</header>
 
 			<!-- Bio/Hero -->
-			<section>
+			<section class="animate-on-load">
 				<h2>About Me</h2>
 				<p>I bridge the gap between robust software engineering, defensive cybersecurity, and data-driven insights. I build secure enterprise architectures, simulate defensive testing environments, and extract actionable data intelligence using Java, Python, and modern cloud ecosystems.</p>
 			</section>
 
 			<!-- Technologies -->
-			<section>
+			<section class="animate-on-load">
 				<h2>Technical Skills</h2>
 				<div class="tag-container">
 					<span class="tag">Java</span>
@@ -40,38 +71,19 @@ import '../styles/global.css';
 				</div>
 			</section>
 
-			<!-- Repositories / Projects -->
-			<section>
+			<!-- Repositories / Projects Section -->
+			<section class="animate-on-load">
 				<h2>Featured GitHub Work</h2>
-				<div class="grid">
-					<div class="card">
-						<h3>NovaChat Backend</h3>
-						<p>Highly scalable backend architecture designed to support secure, real-time message brokering and session moderation.</p>
-						<div class="tag-container">
-							<span class="tag">NestJS</span> <span class="tag">Redis</span> <span class="tag">Prisma</span>
-						</div>
-					</div>
-					
-					<div class="card">
-						<h3>Hybrid Network Defense Simulator</h3>
-						<p>Dual-engine simulation game featuring a terminal scripting environment paired with an interactive security dashboard.</p>
-						<div class="tag-container">
-							<span class="tag">Java</span> <span class="tag">Python</span> <span class="tag">Automation</span>
-						</div>
-					</div>
-					
-					<div class="card">
-						<h3>Data Automation Suite</h3>
-						<p>Automated verification pipelines built leveraging data science toolsets and continuous validation architecture.</p>
-						<div class="tag-container">
-							<span class="tag">Python</span> <span class="tag">Pytest</span> <span class="tag">Data Analysis</span>
-						</div>
-					</div>
+				<div class="grid" id="github-repos-container">
+					<!-- Animated CSS Loading Skeletons -->
+					<div class="skeleton-card"></div>
+					<div class="skeleton-card"></div>
+					<div class="skeleton-card"></div>
 				</div>
 			</section>
 
 			<!-- Contact Footer -->
-			<footer style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid #21262d; text-align: center;">
+			<footer class="animate-on-load" style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid #21262d; text-align: center;">
 				<p>Let's build something secure.</p>
 				<p>
 					<a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a> &bull; 
@@ -80,5 +92,106 @@ import '../styles/global.css';
 				</p>
 			</footer>
 		</main>
+
+				<!-- Script Engine: Handles Entry Animations & Live API Feed + Local Fallback -->
+		<script>
+			// 1. CONFIGURATION
+			// CHANGE THIS to your exact GitHub user account name:
+			const GITHUB_USERNAME = 'YOUR_ACTUAL_GITHUB_USERNAME'; 
+			
+			// Hardcoded backup data to display if GitHub API rate-limits or blocks the connection
+			const FALLBACK_REPOS = [
+				{
+					name: "NovaChat Backend",
+					html_url: `https://github.com{GITHUB_USERNAME}/novachat-backend`,
+					description: "Highly scalable backend architecture designed to support secure, real-time message brokering and session moderation.",
+					language: "NestJS"
+				},
+				{
+					name: "Hybrid Network Defense Simulator",
+					html_url: `https://github.com{GITHUB_USERNAME}/network-defense-simulator`,
+					description: "Dual-engine simulation game featuring a terminal scripting environment paired with an interactive security dashboard.",
+					language: "Java"
+				},
+				{
+					name: "Data Automation Suite",
+					html_url: `https://github.com{GITHUB_USERNAME}/data-automation-suite`,
+					description: "Automated verification pipelines built leveraging data science toolsets and continuous validation architecture.",
+					language: "Python"
+				}
+			];
+
+			const container = document.getElementById('github-repos-container');
+
+			// Helper function to render an array of repositories onto the grid layout
+			function renderCards(repoList: any[], isFallback = false) {
+				if (container) container.innerHTML = ''; // Wipe loading elements or error flags
+
+				repoList.forEach((repo: any, index: number) => {
+					const card = document.createElement('div');
+					card.className = 'card animate-on-load';
+					
+					const description = repo.description || 'Secure architecture implementation and deployment blueprint.';
+					const languageTag = repo.language ? `<span class="tag">${repo.language}</span>` : '';
+					const starsTag = repo.stargazers_count > 0 ? `<span class="tag">⭐ ${repo.stargazers_count}</span>` : '';
+					const syncTag = isFallback 
+						? `<span class="tag" style="color: #e3b341; border-color: rgba(227,179,65,0.3);">⚙️ Local Image</span>`
+						: `<span class="tag" style="color: var(--accent-sec); border-color: rgba(35,134,54,0.4);">✓ Live Sync</span>`;
+
+					card.innerHTML = `
+						<h3><a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">${repo.name}</a></h3>
+						<p>${description}</p>
+						<div class="tag-container">
+							${languageTag}
+							${starsTag}
+							${syncTag}
+						</div>
+					`;
+					
+					if (container) container.appendChild(card);
+
+					// Stagger visual entrance animation smoothly
+					setTimeout(() => {
+						card.classList.add('animate-reveal');
+					}, index * 100 + 200); 
+				});
+			}
+
+			async function fetchGitHubRepos() {
+				try {
+					const response = await fetch(`https://github.com{GITHUB_USERNAME}/repos?sort=updated&per_page=6`);
+					
+					// If the cloud network rate limit drops or fails, immediately jump to the catch block
+					if (!response.ok) throw new Error('API limit restricted');
+					
+					const repos = await response.json();
+					const originalRepos = repos.filter((repo: any) => !repo.fork);
+
+					if (originalRepos.length === 0) {
+						renderCards(FALLBACK_REPOS, true);
+					} else {
+						renderCards(originalRepos, false);
+					}
+				} catch (error) {
+					console.warn("GitHub live stream unavailable. Deploying local archive values instead.", error);
+					// Seamless silent fallback to static details so recruiters never see an error card
+					renderCards(FALLBACK_REPOS, true);
+				}
+			}
+
+			// 2. PAGE INITIALIZATION ENGINE
+			document.addEventListener('DOMContentLoaded', () => {
+				const staticAnimatedElements = document.querySelectorAll('main > .animate-on-load');
+				
+				staticAnimatedElements.forEach((element, index) => {
+					setTimeout(() => {
+						element.classList.add('animate-reveal');
+					}, index * 120);
+				});
+
+				fetchGitHubRepos();
+			});
+		</script>
+
 	</body>
 </html>
