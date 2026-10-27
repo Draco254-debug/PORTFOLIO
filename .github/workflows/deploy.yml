@@ -41,8 +41,9 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Install Project Dependencies
-        run: npm ci
+        run: npm install
         working-directory: ${{ env.BUILD_PATH }}
+
 
       - name: Compile Site using Astro Compiler
         run: npm run build
