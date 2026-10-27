@@ -1,11 +1,84 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import '../styles/global.css';
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Graham Moguche | Portfolio</title>
+	</head>
+	<body>
+		<main class="container">
+			<!-- Header Profile -->
+			<header style="margin-bottom: 3rem;">
+				<h1>Graham Moguche</h1>
+				<p style="color: var(--accent-color); font-size: 1.25rem; margin: 0;">Software Engineer & Security Analyst</p>
+			</header>
+
+			<!-- Bio/Hero -->
+			<section>
+				<h2>About Me</h2>
+				<p>I bridge the gap between robust software engineering, defensive cybersecurity, and data-driven insights. I build secure enterprise architectures, simulate defensive testing environments, and extract actionable data intelligence using Java, Python, and modern cloud ecosystems.</p>
+			</section>
+
+			<!-- Technologies -->
+			<section>
+				<h2>Technical Skills</h2>
+				<div class="tag-container">
+					<span class="tag">Java</span>
+					<span class="tag">Python</span>
+					<span class="tag">TypeScript</span>
+					<span class="tag">NestJS</span>
+					<span class="tag">Spring Boot</span>
+					<span class="tag">PostgreSQL</span>
+					<span class="tag">Redis</span>
+					<span class="tag">Docker</span>
+					<span class="tag">Defensive Cyber Engineering</span>
+				</div>
+			</section>
+
+			<!-- Repositories / Projects -->
+			<section>
+				<h2>Featured GitHub Work</h2>
+				<div class="grid">
+					<div class="card">
+						<h3>NovaChat Backend</h3>
+						<p>Highly scalable backend architecture designed to support secure, real-time message brokering and session moderation.</p>
+						<div class="tag-container">
+							<span class="tag">NestJS</span> <span class="tag">Redis</span> <span class="tag">Prisma</span>
+						</div>
+					</div>
+					
+					<div class="card">
+						<h3>Hybrid Network Defense Simulator</h3>
+						<p>Dual-engine simulation game featuring a terminal scripting environment paired with an interactive security dashboard.</p>
+						<div class="tag-container">
+							<span class="tag">Java</span> <span class="tag">Python</span> <span class="tag">Automation</span>
+						</div>
+					</div>
+					
+					<div class="card">
+						<h3>Data Automation Suite</h3>
+						<p>Automated verification pipelines built leveraging data science toolsets and continuous validation architecture.</p>
+						<div class="tag-container">
+							<span class="tag">Python</span> <span class="tag">Pytest</span> <span class="tag">Data Analysis</span>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Contact Footer -->
+			<footer style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid #21262d; text-align: center;">
+				<p>Let's build something secure.</p>
+				<p>
+					<a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a> &bull; 
+					<a href="mailto:your-email@example.com">Email</a> &bull;
+					<a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+				</p>
+			</footer>
+		</main>
+	</body>
+</html>
